@@ -25,7 +25,7 @@ class AuthController extends Controller
 
         if (Auth::attempt($credentials, $request->remember)) {
             $request->session()->regenerate();
-            notyf()->info('Welcome back!');
+            notyf()->position('x', 'center')->position('y', 'top')->info('Welcome back!');
             return redirect()->intended('');
         }
 
@@ -61,7 +61,9 @@ class AuthController extends Controller
             'email' => $request->email,
             'password' => Hash::make($request->password),
         ]);
-        notyf()->info('Your account has been successfully created');
+        notyf()
+        ->position('x', 'center')->postion('y', 'top')
+        ->info('Your account has been successfully created');
         return redirect()->route('login')->with('success', 'Registration successful!');
     }
 
@@ -70,6 +72,6 @@ class AuthController extends Controller
         Auth::logout();
         $request->session()->invalidate();
         $request->session()->regenerateToken();
-        return redirect('/');
+        return redirect('login');
     }
 }

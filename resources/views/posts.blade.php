@@ -1,5 +1,8 @@
 <x-layout>
     <x-slot:title>{{ $title }}</x-slot:title>
+    @auth
+        <x-add></x-add>
+    @endauth
 
     <div class="py-8 px-4 mx-auto max-w-screen-xl lg:py-6 lg:px-6">
         <div class="mx-auto max-w-screen-md sm:text-center">
@@ -30,7 +33,7 @@
 
     {{ $posts->links() }}
 
-    <div class="my-4 py-4 px-4 mx-auto max-w-screen-xl lg:py-8 lg:px-0">
+    <div class="my-4 py-4 px-4 mx-auto max-w-screen-lg lg:py-8 lg:px-0">
         <div class="grid gap-8 md:grid-cols-2 lg:grid-cols-3">
 
             @forelse ($posts as $post)

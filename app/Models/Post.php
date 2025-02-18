@@ -16,12 +16,12 @@ class Post extends Model
 
     public function author():BelongsTo
     {
-        return $this->belongsTo(User::class);
+        return $this->belongsTo(User::class, 'author_id');
     }
 
     public function category():BelongsTo
     {
-        return $this->belongsTo(Category::class);
+        return $this->belongsTo(Category::class, 'category_id');
     }
 
     public function scopeFilter(Builder $query, array $filters): void
@@ -44,4 +44,5 @@ class Post extends Model
             $query->whereHas('author', fn($query) => $query->where('username', $author))
         );
     }
+    
 }
