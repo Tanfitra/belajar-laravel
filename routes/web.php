@@ -6,6 +6,7 @@ use App\Models\Category;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\PostController;
+use Illuminate\Support\Facades\Auth;
 
 Route::get('/', function () {
     return view('home', ['title' => 'Home Page']);
@@ -20,6 +21,10 @@ Route::get('/posts', function () {
 
     return view('posts', ['title' => 'Blog', 'posts' =>
     Post::filter(request(['search', 'category', 'author']))->latest()->paginate(9)->withQueryString()]);
+});
+
+Route::get('/profile', function () {
+    return view('profile', ['title' => 'My Profile', 'user' => Auth::user()]);
 });
 
 Route::get('/posts/{post:slug}', function (Post $post) {
@@ -48,4 +53,5 @@ Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 Route::middleware('auth')->group(function () {
     Route::get('/posts/create', [PostController::class, 'create'])->name('posts.create');
     Route::post('/posts', [PostController::class, 'store'])->name('posts.store');
+    Route::put('/posts/{post}', [PostController::class, 'update'])->name('posts.update');
 });
