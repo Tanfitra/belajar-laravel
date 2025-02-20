@@ -62,9 +62,9 @@ class AuthController extends Controller
             'password' => Hash::make($request->password),
         ]);
         notyf()
-        ->position('x', 'center')->postion('y', 'top')
+        ->position('x', 'center')->position('y', 'top')
         ->info('Your account has been successfully created');
-        return redirect()->route('login')->with('success', 'Registration successful!');
+        return redirect()->route('login');
     }
 
     public function logout(Request $request)
@@ -72,6 +72,7 @@ class AuthController extends Controller
         Auth::logout();
         $request->session()->invalidate();
         $request->session()->regenerateToken();
+        notyf()->position('x', 'center')->position('y', 'top')->info('You have been logged out');
         return redirect('login');
     }
 }
