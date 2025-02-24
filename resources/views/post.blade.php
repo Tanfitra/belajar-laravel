@@ -24,6 +24,13 @@
                             </div>
                         </div>
                     </address>
+                    <div class="mb-5">
+                        @if ($post->image)
+                            <img class="object-cover w-full h-96 rounded-lg" src="{{ asset('storage\post-images/' . $post->image) }}" alt="{{ $post->title }}" />
+                        @else
+                            <img class="object-cover w-full h-96 rounded-lg" src="https://cdn.discordapp.com/attachments/831039319547314208/1342392215229698100/bg.png?ex=67b977ac&is=67b8262c&hm=90e15f67ef6838b7d7faa11ba05422bbd534a94a015f00e0c2e77661e4aadad7&" alt="{{ $post->title }}" />
+                        @endif
+                    </div>
                     <h1
                         class="mb-4 text-3xl font-extrabold leading-tight text-gray-900 lg:mb-6 lg:text-4xl dark:text-white">
                         {{ $post->title }}</h1>

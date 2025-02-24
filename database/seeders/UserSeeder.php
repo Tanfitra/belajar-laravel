@@ -16,9 +16,9 @@ class UserSeeder extends Seeder
     public function run(): void
     {
         User::create([
-            'name' => 'Adhim Tanfitra',
-            'username' => 'tanfitra',
-            'email' => 'tanfitraadhim@gmail.com',
+            'name' => 'Ademin 1',
+            'username' => 'Ademin1',
+            'email' => 'admin@gmail.com',
             'email_verified_at' => now(),
             'password' => Hash::make('password'),
             'remember_token' => Str::random(10),
@@ -26,7 +26,7 @@ class UserSeeder extends Seeder
 
         User::create([
             'name' => 'Mamat Sutejo',
-            'username' => 'mamat',
+            'username' => 'Mamat',
             'email' => 'mamat@gmail.com',
             'email_verified_at' => now(),
             'password' => Hash::make('password'),
@@ -35,7 +35,7 @@ class UserSeeder extends Seeder
 
         User::create([
             'name' => 'Rahmat Hidayat',
-            'username' => 'rahmat',
+            'username' => 'Rahmat',
             'email' => 'rrahmat@gmail.com',
             'email_verified_at' => now(),
             'password' => Hash::make('password'),

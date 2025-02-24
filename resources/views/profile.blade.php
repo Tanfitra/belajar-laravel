@@ -28,6 +28,18 @@
                                 </a>
                                 <span class="text-sm">{{ $post->created_at->diffForHumans() }}</span>
                             </div>
+                            <div class="mb-5">
+                                @if ($post->image)
+                                <img class="object-cover w-full h-48 rounded-lg"
+                                src="{{ asset('storage/post-images/' . $post->image) }}"
+                                alt="{{ $post->title }}" />
+                            
+                                @else
+                                    <img class="object-cover w-full h-48 rounded-lg"
+                                        src="https://cdn.discordapp.com/attachments/831039319547314208/1342392215229698100/bg.png?ex=67b977ac&is=67b8262c&hm=90e15f67ef6838b7d7faa11ba05422bbd534a94a015f00e0c2e77661e4aadad7&"
+                                        alt="{{ $post->title }}" />
+                                @endif
+                            </div>
                             <h2 class="mb-2 text-2xl font-bold tracking-tight text-gray-900 dark:text-white">
                                 <a href="/posts/{{ $post->slug }}" class="hover:underline">{{ $post['title'] }}</a>
                             </h2>
@@ -47,7 +59,9 @@
                                 </a>
                                 <div class="inline-flex space-x-2">
                                     <div>
-                                        <a href="#" class="edit-post" data-id="{{ $post->id }}" data-title="{{ $post->title }}" data-category="{{ $post->category_id }}" data-content="{{ $post->body }}">
+                                        <a href="#" class="edit-post" data-id="{{ $post->id }}"
+                                            data-title="{{ $post->title }}" data-category="{{ $post->category_id }}"
+                                            data-content="{{ $post->body }}">
                                             <svg class="w-6 h-6 text-yellow-500 dark:text-white" aria-hidden="true"
                                                 xmlns="http://www.w3.org/2000/svg" width="24" height="24"
                                                 fill="none" viewBox="0 0 24 24">
@@ -62,8 +76,8 @@
                                             <svg class="w-6 h-6 text-red-500 dark:text-white" aria-hidden="true"
                                                 xmlns="http://www.w3.org/2000/svg" width="24" height="24"
                                                 fill="none" viewBox="0 0 24 24">
-                                                <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"
-                                                    stroke-width="2"
+                                                <path stroke="currentColor" stroke-linecap="round"
+                                                    stroke-linejoin="round" stroke-width="2"
                                                     d="M5 7h14m-9 3v8m4-8v8M10 3h4a1 1 0 0 1 1 1v3H9V4a1 1 0 0 1 1-1ZM6 7h12v13a1 1 0 0 1-1 1H7a1 1 0 0 1-1-1V7Z" />
                                             </svg>
                                         </a>
@@ -80,30 +94,27 @@
     </div>
 
     <!-- Modal -->
-    <div id="myModal"
-        class="hidden fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full z-50">
-        <div
-            class="relative top-20 mx-auto p-5 border w-11/12 md:w-2/3 lg:w-1/2 xl:w-2/5 shadow-lg rounded-md bg-white">
+    <div id="myModal" class="hidden fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full z-50">
+        <div class="relative top-5 mx-auto p-5 border w-11/12 md:w-2/3 lg:w-1/2 xl:w-2/5 shadow-lg rounded-md bg-white">
             <div class="flex justify-end">
                 <button id="closeModal"
                     class="text-gray-400 hover:text-gray-500 transition-colors duration-150 focus:outline-none">
-                    <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24"
-                        stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round"
-                            stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                    <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M6 18L18 6M6 6l12 12" />
                     </svg>
                 </button>
             </div>
 
             <h2 class="text-2xl font-bold text-gray-900 mb-4">Edit article</h2>
 
-            <form id="editForm" action="{{ route('posts.update', ['post' => ':id']) }}" method="POST">
+            <form id="editForm" action="{{ route('posts.update', ['post' => ':id']) }}" method="POST"
+                enctype="multipart/form-data">
                 @csrf
                 @method('PUT')
 
                 <div class="mb-2">
-                    <label for="title"
-                        class="block text-sm font-medium text-gray-700 mb-2">
+                    <label for="title" class="block text-sm font-medium text-gray-700 mb-2">
                         Title
                     </label>
                     <input type="text" id="title" name="title" required
@@ -112,8 +123,7 @@
                 </div>
 
                 <div class="mb-2">
-                    <label for="category"
-                        class="block text-sm font-medium text-gray-700 mb-2">
+                    <label for="category" class="block text-sm font-medium text-gray-700 mb-2">
                         Category
                     </label>
                     <select id="category" name="category" required
@@ -127,8 +137,17 @@
                 </div>
 
                 <div class="mb-4">
-                    <label for="content"
-                        class="block text-sm font-medium text-gray-700 mb-2">
+                    <label class="block text-sm font-medium text-gray-700 mb-2" for="file_input">Upload file</label>
+                    <input name="image" @error('image') is-invalid @enderror
+                        class="block pt-1.5 w-full text-sm text-gray-900 border border-gray-300 rounded-lg cursor-pointer bg-gray-50 dark:text-gray-400 focus:outline-none dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400"
+                        id="image" type="file" accept="image/*">
+                    @error('image')
+                        <span class="text-red-500 text-sm">{{ $message }}</span>
+                    @enderror
+                </div>
+
+                <div class="mb-4">
+                    <label for="content" class="block text-sm font-medium text-gray-700 mb-2">
                         Content
                     </label>
                     <textarea id="content" name="content" rows="5" required
@@ -174,22 +193,34 @@
                 }
             });
 
-            $('.delete-post').click(function(event) {
-                event.preventDefault();
-                var postId = $(this).data('id');
-                if (confirm('Are you sure you want to delete this post?')) {
-                    $.ajax({
-                        url: '/posts/' + postId,
-                        type: 'DELETE',
-                        data: {
-                            _token: '{{ csrf_token() }}'
-                        },
-                        success: function(result) {
-                            location.reload();
+            $(document).ready(function() {
+                $(document).ready(function() {
+                    $('.delete-post').click(function(event) {
+                        event.preventDefault();
+                        var postId = $(this).data('id');
+
+                        if (confirm('Are you sure you want to delete this post?')) {
+                            $.ajax({
+                                url: '/posts/' + postId,
+                                type: 'POST',
+                                data: {
+                                    _token: '{{ csrf_token() }}',
+                                    _method: 'DELETE'
+                                },
+                                success: function(result) {
+                                    window.location.reload();
+                                },
+                                error: function(xhr, status, error) {
+                                    console.error('Error:', error);
+                                    alert('Failed to delete the post.');
+                                }
+                            });
                         }
                     });
-                }
+                });
+
             });
+
         });
     </script>
 </x-layout>

@@ -24,7 +24,9 @@ Route::get('/posts', function () {
 });
 
 Route::get('/profile', function () {
-    return view('profile', ['title' => 'My Profile', 'user' => Auth::user()]);
+    return view('profile', ['title' => 'My Profile', 'user' => Auth::user(), 'user' => User::with(['posts' => function($query) {
+        $query->orderBy('created_at', 'desc');
+    }])->find(Auth::id())]);
 });
 
 Route::get('/posts/{post:slug}', function (Post $post) {
@@ -54,4 +56,5 @@ Route::middleware('auth')->group(function () {
     Route::get('/posts/create', [PostController::class, 'create'])->name('posts.create');
     Route::post('/posts', [PostController::class, 'store'])->name('posts.store');
     Route::put('/posts/{post}', [PostController::class, 'update'])->name('posts.update');
+    Route::delete('/posts/{id}', [PostController::class, 'destroy'])->name('posts.destroy');
 });

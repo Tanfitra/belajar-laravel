@@ -6,11 +6,12 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use App\Models\User;
 
 class Post extends Model
 {
     use HasFactory;
-    protected $fillable = ['title', 'author', 'slug', 'body'];
+    protected $fillable = ['title', 'author', 'slug', 'body', 'image'];
 
     protected $with = ['author', 'category'];
 

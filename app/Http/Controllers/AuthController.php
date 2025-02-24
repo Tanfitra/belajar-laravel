@@ -61,6 +61,7 @@ class AuthController extends Controller
             'email' => $request->email,
             'password' => Hash::make($request->password),
         ]);
+        Auth::login($user);
         notyf()
         ->position('x', 'center')->position('y', 'top')
         ->info('Your account has been successfully created');

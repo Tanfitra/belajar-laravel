@@ -7,7 +7,7 @@
 
 <!-- Modal -->
 <div id="myModal" class="hidden fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full z-50">
-    <div class="relative top-20 mx-auto p-5 border w-11/12 md:w-2/3 lg:w-1/2 xl:w-2/5 shadow-lg rounded-md bg-white">
+    <div class="relative top-5 mx-auto p-5 border w-11/12 md:w-2/3 lg:w-1/2 xl:w-2/5 shadow-lg rounded-md bg-white">
         <div class="flex justify-end">
             <button id="closeModal" class="text-gray-400 hover:text-gray-500 transition-colors duration-150 focus:outline-none">
                 <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -18,7 +18,7 @@
         
         <h2 class="text-2xl font-bold text-gray-900 mb-4">Post a Article</h2>
         
-        <form action="{{ route('posts.store') }}" method="POST">
+        <form action="{{ route('posts.store') }}" method="POST" enctype="multipart/form-data">
             @csrf
 
             <div class="mb-2">
@@ -54,6 +54,14 @@
                         <option value="{{ $category->id }}">{{ $category->name }}</option>
                     @endforeach --}}
                 </select>
+            </div>
+
+            <div class="mb-4">     
+                <label class="block text-sm font-medium text-gray-700 mb-2" for="file_input">Upload file</label>
+                <input name="image" @error('image') is-invalid @enderror class="block pt-1.5 w-full text-sm text-gray-900 border border-gray-300 rounded-lg cursor-pointer bg-gray-50 dark:text-gray-400 focus:outline-none dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400" id="file_input" type="file" accept="image/*">
+                @error('image')
+                    <span class="text-red-500 text-sm">{{ $message }}</span>
+                @enderror 
             </div>
 
             <div class="mb-4">
