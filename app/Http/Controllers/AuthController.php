@@ -6,8 +6,9 @@ use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
-use Illuminate\Support\Facades\Validator;
+use Illuminate\Auth\Events\Registered;
 use Flasher\Notyf\Prime\NotyfInterface;
+use Illuminate\Support\Facades\Validator;
 
 class AuthController extends Controller
 {
@@ -61,11 +62,17 @@ class AuthController extends Controller
             'email' => $request->email,
             'password' => Hash::make($request->password),
         ]);
+
+        event(new Registered($user));
         Auth::login($user);
+        
         notyf()
         ->position('x', 'center')->position('y', 'top')
         ->info('Your account has been successfully created');
-        return redirect()->route('login');
+        notyf()
+        ->position('x', 'center')->position('y', 'top')
+        ->info('A verification link has been sent to your email address.');
+        return redirect()->intended('/profile');
     }
 
     public function logout(Request $request)
