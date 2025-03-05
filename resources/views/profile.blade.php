@@ -22,10 +22,14 @@
                         <article
                             class="p-6 bg-white rounded-lg border border-gray-200 shadow-md dark:bg-gray-800 dark:border-gray-700 flex flex-col h-full">
                             <div class="flex justify-between items-center mb-5 text-gray-500">
-                                <a href="/posts?category={{ $post->category->slug }}"
-                                    class="bg-{{ $post->category->color }}-100 text-primary-800 text-xs font-medium inline-flex items-center px-2.5 py-0.5 rounded dark:bg-primary-200 dark:text-primary-800">
-                                    {{ $post->category->name }}
-                                </a>
+                                <div class="flex flex-wrap gap-1 mb-2">
+                                    @foreach ($post->categories as $category)
+                                        <a href="/posts?category={{ $category->slug }}"
+                                            class="bg-{{ $category->color }}-100 text-primary-800 text-xs font-medium inline-flex items-center px-2.5 py-0.5 rounded dark:bg-primary-200 dark:text-primary-800">
+                                            {{ $category->name }}
+                                        </a>
+                                    @endforeach
+                                </div>
                                 <span class="text-sm">{{ $post->created_at->diffForHumans() }}</span>
                             </div>
                             <div class="mb-5">

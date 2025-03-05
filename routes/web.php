@@ -19,10 +19,11 @@ Route::get('/about', function () {
 });
 
 Route::get('/posts', function () {
-    // $posts = Post::with(['author', 'category'])->latest()->get();
-
-    return view('posts', ['title' => 'Blog', 'posts' =>
-    Post::filter(request(['search', 'category', 'author']))->latest()->paginate(9)->withQueryString()]);
+    return view('posts', [
+        'title' => 'Blog',
+        'posts' => Post::filter(request(['search', 'category', 'author']))->latest()->paginate(9)->withQueryString(),
+        'categories' => Category::all() // Pass all categories to the view
+    ]);
 });
 
 Route::get('/profile', function () {

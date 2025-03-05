@@ -27,7 +27,7 @@ class AuthController extends Controller
         if (Auth::attempt($credentials, $request->remember)) {
             $request->session()->regenerate();
             notyf()->position('x', 'center')->position('y', 'top')->info('Welcome back!');
-            return redirect()->intended('');
+            return redirect()->intended('/profile');
         }
 
         return back()->withErrors([

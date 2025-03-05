@@ -33,26 +33,41 @@
                     </div>
                     <div>
                         <button type="submit"
-                            class="py-3 px-5 w-full text-sm font-medium text-center text-white rounded-lg border cursor-pointer bg-primary-700 border-primary-600 sm:rounded-none sm:rounded-r-lg hover:bg-primary-800 focus:ring-4 focus:ring-primary-300 dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800">Search</button>
+                            class="py-3 px-5 w-full text-sm font-medium text-center text-white rounded-lg border cursor-pointer bg-[#187a15] border-[#187a15] sm:rounded-none sm:rounded-r-lg hover:bg-[#156D12] focus:ring-4 focus:ring-primary-300 dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800">Search</button>
                     </div>
                 </div>
             </form>
+
+            <!-- Filter Category -->
+            <div class="flex flex-wrap justify-center gap-2 mt-4">
+                <a href="/posts" class="px-4 py-2 text-sm font-medium text-gray-900 bg-gray-100 rounded-lg hover:bg-gray-200 dark:bg-gray-700 dark:text-white dark:hover:bg-gray-600">
+                    All Categories
+                </a>
+                @foreach ($categories as $category)
+                    <a href="/posts?category={{ $category->slug }}" class="px-4 py-2 text-sm font-medium text-white bg-{{ $category->color }}-400 rounded-lg ease-in-out hover:opacity-75 hover:underline">
+                        {{ $category->name }}
+                    </a>
+                @endforeach
+            </div>
         </div>
     </div>
 
-    {{ $posts->links() }}
 
-    <div class="my-4 py-4 px-4 mx-auto max-w-screen-lg lg:py-8 lg:px-0">
+    <div class="py-4 px-4 mx-auto max-w-screen-xl lg:py-8 lg:px-0">
         <div class="grid gap-8 md:grid-cols-2 lg:grid-cols-3">
 
             @forelse ($posts as $post)
                 <article
                     class="p-6 bg-white rounded-lg border border-gray-200 shadow-md dark:bg-gray-800 dark:border-gray-700 flex flex-col h-full">
                     <div class="flex justify-between items-center mb-5 text-gray-500">
-                        <a href="/posts?category={{ $post->category->slug }}"
-                            class="bg-{{ $post->category->color }}-100 text-primary-800 text-xs font-medium inline-flex items-center px-2.5 py-0.5 rounded dark:bg-primary-200 dark:text-primary-800">
-                            {{ $post->category->name }}
-                        </a>
+                        <div class="flex flex-wrap gap-1 mb-2">
+                            @foreach ($post->categories as $category)
+                                <a href="/posts?category={{ $category->slug }}"
+                                    class="bg-{{ $category->color }}-100 text-primary-800 text-xs font-medium inline-flex items-center px-2.5 py-0.5 rounded dark:bg-primary-200 dark:text-primary-800">
+                                    {{ $category->name }}
+                                </a>
+                            @endforeach
+                        </div>
                         <span class="text-sm">{{ $post->created_at->diffForHumans() }}</span>
                     </div>
                     <div class="mb-5">

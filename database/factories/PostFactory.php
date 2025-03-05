@@ -20,11 +20,10 @@ class PostFactory extends Factory
     public function definition(): array
     {
         return [
-            'title' => fake()->sentence(),
-            'author_id' => User::factory(),
-            'category_id' => Category::factory(),
+            'title' => fake()->realText(50, 3),
+            'author_id' => User::inRandomOrder()->first()->id,
             'slug' => Str::slug(fake()->sentence()),
-            'body' => fake()->paragraphs(2, true)
+            'body' => fake()->realText(750, 5)
         ];
     }
 }

@@ -1,5 +1,4 @@
 /** @type {import('tailwindcss').Config} */
-import defaultTheme from 'tailwindcss/defaultTheme';
 export default {
     darkMode: 'class',
     content: [
@@ -14,10 +13,9 @@ export default {
         "./node_modules/flowbite/**/*.js"
     ],
     safelist: [
-        'bg-green-100',
-        'bg-red-100',
-        'bg-yellow-100',
-        'bg-blue-100',
+        {
+            pattern: /bg-(red|green|blue|yellow|orange|amber|lime|emerald|teal|cyan|sky|indigo|violet|purple|fuchsia|pink|rose)-(100|200|300|400|500|600|700|800|900)/,
+        }
     ],
     theme: {
         extend: {

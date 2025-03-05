@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use App\Models\User;
@@ -11,39 +12,43 @@ use App\Models\User;
 class Post extends Model
 {
     use HasFactory;
-    protected $fillable = ['title', 'author', 'slug', 'body', 'image'];
 
-    protected $with = ['author', 'category'];
+    protected $fillable = ['title', 'author_id', 'slug', 'body', 'image'];
 
-    public function author():BelongsTo
+    protected $with = ['author', 'categories'];
+
+    public function author(): BelongsTo
     {
         return $this->belongsTo(User::class, 'author_id');
     }
 
-    public function category():BelongsTo
+    public function categories(): BelongsToMany
     {
-        return $this->belongsTo(Category::class, 'category_id');
+        return $this->belongsToMany(Category::class, 'category_post');
     }
 
-    public function scopeFilter(Builder $query, array $filters): void
+    public function scopeFilter($query, array $filters)
     {
-        $query->when(
-            $filters['search'] ?? false, 
-            fn($query, $search) =>
-            $query->where('title', 'like', '%' . $search . '%')
-        );
+        // Search by title or content
+        $query->when($filters['search'] ?? false, function ($query, $search) {
+            $query->where(function ($query) use ($search) {
+                $query->where('title', 'like', '%' . $search . '%')
+                    ->orWhere('body', 'like', '%' . $search . '%');
+            });
+        });
 
-        $query->when(
-            $filters['category'] ?? false,
-            fn($query, $category) =>
-            $query->whereHas('category', fn($query) => $query->where('slug', $category))
-        );
+        // Filter by author
+        $query->when($filters['author'] ?? false, function ($query, $author) {
+            $query->whereHas('author', function ($query) use ($author) {
+                $query->where('username', $author);
+            });
+        });
 
-        $query->when(
-            $filters['author'] ?? false,
-            fn($query, $author) =>
-            $query->whereHas('author', fn($query) => $query->where('username', $author))
-        );
+        // Filter by category
+        $query->when($filters['category'] ?? false, function ($query, $category) {
+            $query->whereHas('categories', function ($query) use ($category) {
+                $query->where('slug', $category);
+            });
+        });
     }
-    
 }

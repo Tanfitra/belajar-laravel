@@ -20,9 +20,9 @@ class DatabaseSeeder extends Seeder
             CategorySeeder::class,
         ]);
 
-        Post::factory(50)->recycle([
-            Category::all(),
-            User::all(),
-        ])->create();
+        Post::factory(50)->create()->each(function ($post) {
+            $categories = Category::inRandomOrder()->take(rand(1, 3))->pluck('id');
+            $post->categories()->attach($categories);
+        });
     }
 }
