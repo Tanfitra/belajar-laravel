@@ -27,7 +27,7 @@ class AuthController extends Controller
         if (Auth::attempt($credentials, $request->remember)) {
             $request->session()->regenerate();
             notyf()->position('x', 'center')->position('y', 'top')->info('Welcome back!');
-            return redirect()->intended('/profile');
+            return redirect('/profile');
         }
 
         return back()->withErrors([
@@ -72,7 +72,7 @@ class AuthController extends Controller
         notyf()
         ->position('x', 'center')->position('y', 'top')
         ->info('A verification link has been sent to your email address.');
-        return redirect()->intended('/profile');
+        return redirect('/profile');
     }
 
     public function logout(Request $request)

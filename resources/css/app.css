@@ -3,3 +3,17 @@
 @tailwind utilities;
 
 @plugin "flowbite-typography";
+
+/* Trix Editor Styling */
+.trix-content {
+    @apply mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm;
+    min-height: 200px;
+}
+
+.trix-button-group {
+    @apply bg-white border-gray-300 rounded-t-lg;
+}
+
+.trix-button {
+    @apply text-gray-700 hover:bg-gray-100;
+}

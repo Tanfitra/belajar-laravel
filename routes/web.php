@@ -3,12 +3,13 @@
 use App\Models\Post;
 use App\Models\User;
 use App\Models\Category;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\PostController;
-use Illuminate\Support\Facades\Auth;
+use App\Http\Controllers\ProfilePostController;
 use Illuminate\Foundation\Auth\EmailVerificationRequest;
-use Illuminate\Http\Request;
 
 Route::get('/', function () {
     return view('home', ['title' => 'Home Page']);
@@ -26,11 +27,23 @@ Route::get('/posts', function () {
     ]);
 });
 
-Route::get('/profile', function () {
-    return view('profile', ['title' => 'My Profile', 'user' => Auth::user(), 'user' => User::with(['posts' => function($query) {
-        $query->orderBy('created_at', 'desc');
-    }])->find(Auth::id())]);
-})->middleware(['auth', 'verified']);
+Route::prefix('profile')->middleware(['auth', 'verified'])->group(function () {
+    Route::get('/', function () {
+        return view('profile.index', [
+            'title' => 'My Profile',
+            'user' => User::with(['posts' => function($query) {
+                $query->orderBy('created_at', 'desc');
+            }])->find(Auth::id()),
+        ]);
+    });
+
+    Route::get('/posts', [ProfilePostController::class, 'index'])->name('profile.posts');
+    Route::get('/posts/create', [ProfilePostController::class, 'create'])->name('profile.posts.create');
+    Route::post('/posts', [ProfilePostController::class, 'store'])->name('profile.posts.store');
+    Route::get('/posts/{post}/edit', [ProfilePostController::class, 'edit'])->name('profile.posts.edit');
+    Route::put('/posts/{post}', [ProfilePostController::class, 'update'])->name('profile.posts.update');
+    Route::delete('/posts/{post}', [ProfilePostController::class, 'destroy'])->name('profile.posts.destroy');
+});
 
 Route::get('/posts/{post:slug}', function (Post $post) {
     return view('post', ['title' => 'Single Post', 'post' => $post]);
@@ -55,12 +68,6 @@ Route::post('/login', [AuthController::class, 'login'])->name('login.submit');
 Route::get('/register', [AuthController::class, 'showRegistrationForm'])->name('register');
 Route::post('/register', [AuthController::class, 'register'])->name('register.submit');
 Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
-Route::middleware(['auth', 'verified'])->group(function () {
-    Route::get('/posts/create', [PostController::class, 'create'])->name('posts.create');
-    Route::post('/posts', [PostController::class, 'store'])->name('posts.store');
-    Route::put('/posts/{post}', [PostController::class, 'update'])->name('posts.update');
-    Route::delete('/posts/{id}', [PostController::class, 'destroy'])->name('posts.destroy');
-});
 
 Route::get('/email/verify', function () {
     return view('mails.verify');

@@ -8,27 +8,39 @@ use App\Models\Category;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
+use App\Models\User;
 
-class PostController extends Controller
+class ProfilePostController extends Controller
 {
+    /**
+     * Display a listing of the authenticated user's posts.
+     */
     public function index()
-{
-    $categories = Category::all();
-    $posts = Post::latest()->filter(request(['search', 'category', 'author']))->paginate(9)->withQueryString();
+    {
+        $user = User::with(['posts' => function($query) {
+            $query->orderBy('created_at', 'desc');
+        }])->find(Auth::id());
 
-    return view('posts.index', [
-        'title' => 'All Posts',
-        'posts' => $posts,
-        'categories' => $categories,
-    ]);
-}
+        return view('profile.posts.index', [
+            'title' => 'My Posts',
+            'user' => $user,
+        ]);
+    }
 
+    /**
+     * Show the form for creating a new post.
+     */
     public function create()
     {
         $categories = Category::all();
-        return view('posts.create', compact('categories'));
+        return view('profile.posts.create', [
+            'categories' => $categories,
+        ]);
     }
 
+    /**
+     * Store a newly created post in storage.
+     */
     public function store(Request $request)
     {
         $request->validate([
@@ -62,11 +74,36 @@ class PostController extends Controller
             ->position('x', 'center')->position('y', 'top')
             ->success('Your article has been successfully posted');
 
-        return redirect('/posts');
+        return redirect('/profile/posts');
     }
 
+    /**
+     * Show the form for editing the specified post.
+     */
+    public function edit(Post $post)
+    {
+        // Ensure the authenticated user owns the post
+        if ($post->author_id !== Auth::id()) {
+            abort(403, 'Unauthorized action.');
+        }
+
+        $categories = Category::all();
+        return view('profile.posts.edit', [
+            'post' => $post,
+            'categories' => $categories,
+        ]);
+    }
+
+    /**
+     * Update the specified post in storage.
+     */
     public function update(Request $request, Post $post)
     {
+        // Ensure the authenticated user owns the post
+        if ($post->author_id !== Auth::id()) {
+            abort(403, 'Unauthorized action.');
+        }
+
         $request->validate([
             'title' => 'required|string|max:255',
             'category' => 'required|array',
@@ -96,12 +133,18 @@ class PostController extends Controller
             ->position('x', 'center')->position('y', 'top')
             ->success('Your article has been successfully updated');
 
-        return redirect('/profile');
+        return redirect('/profile/posts');
     }
 
-    public function destroy($id)
+    /**
+     * Remove the specified post from storage.
+     */
+    public function destroy(Post $post)
     {
-        $post = Post::findOrFail($id);
+        // Ensure the authenticated user owns the post
+        if ($post->author_id !== Auth::id()) {
+            abort(403, 'Unauthorized action.');
+        }
 
         if ($post->image) {
             Storage::disk('public')->delete('post-images/' . $post->image);

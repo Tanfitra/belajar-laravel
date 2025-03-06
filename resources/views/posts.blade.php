@@ -1,11 +1,4 @@
 <x-layout>
-    <x-slot:title>{{ $title }}</x-slot:title>
-    @auth
-        @if (Auth::user()->hasVerifiedEmail())
-            <x-add></x-add>
-        @endif
-    @endauth
-
     <div class="py-8 px-4 mx-auto max-w-screen-xl lg:py-6 lg:px-6">
         <div class="mx-auto max-w-screen-md sm:text-center">
             <form>

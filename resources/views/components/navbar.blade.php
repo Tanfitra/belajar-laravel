@@ -2,7 +2,7 @@
     <a href="/" class="text-3xl font-semibold">Prabubima</a>
     <div class="space-x-8 flex items-center">
         <a href="/about" class="text-gray-700 hover:text-gray-950">Our Story</a>
-        <a href="#" class="flex items-center space-x-1 text-gray-700 hover:text-gray-950">
+        <a href="/profile/posts/create" class="flex items-center space-x-1 text-gray-700 hover:text-gray-950">
             <svg class="w-6 h-6 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24"
                 height="24" fill="none" viewBox="0 0 24 24">
                 <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
@@ -33,6 +33,8 @@
                     role="menu" aria-orientation="vertical" aria-labelledby="user-menu-button" tabindex="-1">
                     <a href="/profile" class="block px-4 py-2 text-sm text-gray-700" role="menuitem" tabindex="-1"
                         id="user-menu-item-0">Your Profile</a>
+                    <a href="/profile/posts" class="block px-4 py-2 text-sm text-gray-700" role="menuitem" tabindex="-1"
+                        id="user-menu-item-1">Manage Posts</a>
                     <a href="#" class="block px-4 py-2 text-sm text-gray-700" role="menuitem" tabindex="-1"
                         id="user-menu-item-1">Settings</a>
                     <form method="POST" action="{{ route('logout') }}">
