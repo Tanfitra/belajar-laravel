@@ -9,6 +9,7 @@ use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
 use App\Models\User;
+use App\Helpers\PostHelper;
 
 class ProfilePostController extends Controller
 {
@@ -17,7 +18,7 @@ class ProfilePostController extends Controller
      */
     public function index()
     {
-        $user = User::with(['posts' => function($query) {
+        $user = User::with(['posts' => function ($query) {
             $query->orderBy('created_at', 'desc');
         }])->find(Auth::id());
 
@@ -48,26 +49,22 @@ class ProfilePostController extends Controller
             'content' => 'required|string',
             'category' => 'required|array',
             'category.*' => 'exists:categories,id',
-            'image' => 'nullable|image|file|max:2048',
         ]);
 
-        $imageName = null;
-
-        if ($request->hasFile('image')) {
-            $image = $request->file('image');
-            $imageName = $image->hashName();
-            $image->storeAs('post-images', $imageName, 'public');
-        }
+        $firstImage = PostHelper::extractFirstImage($request->content);
 
         $post = new Post();
         $post->title = $request->title;
         $post->author_id = Auth::id();
         $post->slug = Str::slug($request->title);
-        $post->image = $imageName;
         $post->body = $request->content;
+
+        if ($firstImage) {
+            $post->image = 'post-images/' . $firstImage;
+        }
+
         $post->save();
 
-        // Attach multiple categories
         $post->categories()->sync($request->category);
 
         notyf()
@@ -82,7 +79,6 @@ class ProfilePostController extends Controller
      */
     public function edit(Post $post)
     {
-        // Ensure the authenticated user owns the post
         if ($post->author_id !== Auth::id()) {
             abort(403, 'Unauthorized action.');
         }
@@ -99,7 +95,6 @@ class ProfilePostController extends Controller
      */
     public function update(Request $request, Post $post)
     {
-        // Ensure the authenticated user owns the post
         if ($post->author_id !== Auth::id()) {
             abort(403, 'Unauthorized action.');
         }
@@ -108,21 +103,19 @@ class ProfilePostController extends Controller
             'title' => 'required|string|max:255',
             'category' => 'required|array',
             'category.*' => 'exists:categories,id',
-            'image' => 'nullable|image|file|max:2048',
             'content' => 'required|string',
         ]);
 
-        if ($request->hasFile('image')) {
-            if ($post->image) {
-                Storage::disk('public')->delete('post-images/' . $post->image);
-            }
-
-            $imagePath = $request->file('image')->store('post-images', 'public');
-            $post->image = basename($imagePath);
-        }
+        $firstImage = PostHelper::extractFirstImage($request->content);
 
         $post->title = $request->title;
+        
         $post->body = $request->content;
+
+        if ($firstImage) {
+            $post->image = 'post-images/' . $firstImage;
+        }
+
         $post->save();
 
         if ($request->has('category')) {
@@ -141,13 +134,9 @@ class ProfilePostController extends Controller
      */
     public function destroy(Post $post)
     {
-        // Ensure the authenticated user owns the post
+
         if ($post->author_id !== Auth::id()) {
             abort(403, 'Unauthorized action.');
-        }
-
-        if ($post->image) {
-            Storage::disk('public')->delete('post-images/' . $post->image);
         }
 
         $post->delete();
@@ -157,5 +146,27 @@ class ProfilePostController extends Controller
             ->success('Your article has been successfully deleted');
 
         return redirect('/profile/posts');
+    }
+
+    /**
+     * Handle image uploads from Trix editor.
+     */
+    public function upload(Request $request)
+    {
+        $request->validate([
+            'image' => 'required|image|mimes:jpeg,png,jpg,gif|max:2048',
+        ]);
+
+        if ($request->hasFile('image')) {
+            $image = $request->file('image');
+            $imageName = time() . '.' . $image->getClientOriginalExtension();
+            $image->storeAs('post-images', $imageName, 'public');
+
+            return response()->json([
+                'url' => asset('storage/post-images/' . $imageName),
+            ]);
+        }
+
+        return response()->json(['error' => 'Image upload failed.'], 400);
     }
 }

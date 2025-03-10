@@ -23,13 +23,6 @@
                     required>
             </div>
 
-            <!-- Content Field (Trix Editor) -->
-            <div class="mb-4">
-                <label for="content" class="block text-sm font-medium text-gray-700">Content</label>
-                <input id="content" type="hidden" name="content" value="{{ old('content') }}">
-                <trix-editor input="content" class="trix-content"></trix-editor>
-            </div>
-
             <!-- Categories Field -->
             <div class="mb-4">
                 <p class="block text-sm font-medium text-gray-700">Categories</p>
@@ -44,11 +37,11 @@
                 </select>
             </div>
 
-            <!-- Image Upload Field -->
+            <!-- Content Field (Trix Editor) -->
             <div class="mb-4">
-                <label for="image" class="block text-sm font-medium text-gray-700">Featured Image</label>
-                <input type="file" name="image" id="image"
-                    class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm">
+                <label for="content" class="block text-sm font-medium text-gray-700">Content</label>
+                <input id="content" type="hidden" name="content" value="{{ old('content') }}">
+                <trix-editor input="content" class="trix-content bg-white post-content"></trix-editor>
             </div>
 
             <!-- Submit Button -->
@@ -61,28 +54,59 @@
     </div>
     <script>
         $(document).ready(function() {
-        $('#categories').select2({
-            placeholder: "Select categories",
-            allowClear: true,
-            width: '100%',
-            templateResult: formatCategory,
-            templateSelection: formatCategory
+            $('#categories').select2({
+                placeholder: "Select categories",
+                allowClear: true,
+                width: '100%',
+                templateResult: formatCategory,
+                templateSelection: formatCategory
+            });
+
+            function formatCategory(category) {
+                if (!category.id) return category.text;
+
+                // Ambil warna dari atribut data-color
+                var colorClass = $(category.element).data('color');
+                var tailwindColors = {
+                    "red-300": "#fca5a5",
+                    "blue-300": "#93c5fd",
+                    "green-300": "#86efac",
+                    "yellow-300": "#fde047",
+                    "purple-300": "#d8b4fe",
+                    "pink-300": "#f9a8d4"
+                };
+
+                var bgColor = tailwindColors[colorClass] || "#e5e7eb";
+
+                return $('<span style="background-color: ' + bgColor +
+                    '; color: black; padding: 4px 8px; border-radius: 4px;">' + category.text + '</span>');
+            }
+        });
+    </script>
+    <script>
+        document.addEventListener('trix-attachment-add', function(event) {
+            const file = event.attachment.file;
+            if (file) {
+                uploadImage(file).then(response => {
+                    event.attachment.setAttributes({
+                        url: response.url,
+                        href: response.url
+                    });
+                });
+            }
         });
 
-        function formatCategory(category) {
-            if (!category.id) return category.text;
+        function uploadImage(file) {
+            const formData = new FormData();
+            formData.append('image', file);
 
-            // Ambil warna dari atribut data-color
-            var colorClass = $(category.element).data('color'); 
-            var tailwindColors = {
-                "red-300": "#fca5a5", "blue-300": "#93c5fd", "green-300": "#86efac",
-                "yellow-300": "#fde047", "purple-300": "#d8b4fe", "pink-300": "#f9a8d4"
-            };
-
-            var bgColor = tailwindColors[colorClass] || "#e5e7eb";
-
-            return $('<span style="background-color: ' + bgColor + '; color: black; padding: 4px 8px; border-radius: 4px;">' + category.text + '</span>');
+            return fetch('{{ route('profile.posts.upload') }}', {
+                method: 'POST',
+                headers: {
+                    'X-CSRF-TOKEN': '{{ csrf_token() }}',
+                },
+                body: formData
+            }).then(response => response.json());
         }
-    });
     </script>
 </x-layout>

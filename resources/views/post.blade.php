@@ -2,7 +2,7 @@
     <main class="pt-8 pb-16 lg:pt-16 lg:pb-24 bg-[#] dark:bg-gray-900 antialiased my-4">
         <div class="flex justify-between px-4 mx-auto max-w-screen-xl ">
             <article
-                class="mx-auto w-full max-w-4xl format format-sm sm:format-base lg:format-lg format-blue dark:format-invert">
+                class="mx-auto w-full max-w-4xl format format-sm sm:format-base lg:format-lg format-blue dark:format-invert bg-white p-12 rounded-lg">
                 <header class="mb-4 lg:mb-6 not-format">
                   <a href="/posts" class="font-medium text-sm text-blue-600 hover:underline">&laquo; Back to all posts</a>
                     <address class="flex items-center my-4 not-italic">
@@ -30,15 +30,10 @@
                     <h1
                         class="mb-4 text-3xl font-extrabold leading-tight text-gray-900 lg:mb-6 lg:text-4xl dark:text-white">
                         {{ $post->title }}</h1>
-                    <div class="mb-5">
-                        @if ($post->image)
-                            <img class="object-cover w-full h-96 rounded-lg" src="{{ asset('storage\post-images/' . $post->image) }}" alt="{{ $post->title }}" />
-                        @else
-                            <img class="object-cover w-full h-96 rounded-lg" src="https://cdn.discordapp.com/attachments/831039319547314208/1342392215229698100/bg.png?ex=67b977ac&is=67b8262c&hm=90e15f67ef6838b7d7faa11ba05422bbd534a94a015f00e0c2e77661e4aadad7&" alt="{{ $post->title }}" />
-                        @endif
-                    </div>
                 </header>
-                <p>{{ $post->body }}</p>
+                <div class="post-content">
+                    {!! $post->body !!}
+                </div>
             </article>
         </div>
     </main>

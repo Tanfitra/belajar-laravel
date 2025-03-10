@@ -23,7 +23,7 @@ Route::get('/posts', function () {
     return view('posts', [
         'title' => 'Blog',
         'posts' => Post::filter(request(['search', 'category', 'author']))->latest()->paginate(9)->withQueryString(),
-        'categories' => Category::all() // Pass all categories to the view
+        'categories' => Category::all()
     ]);
 });
 
@@ -37,6 +37,7 @@ Route::prefix('profile')->middleware(['auth', 'verified'])->group(function () {
         ]);
     });
 
+    Route::post('/profile/posts/upload', [ProfilePostController::class, 'upload'])->name('profile.posts.upload');
     Route::get('/posts', [ProfilePostController::class, 'index'])->name('profile.posts');
     Route::get('/posts/create', [ProfilePostController::class, 'create'])->name('profile.posts.create');
     Route::post('/posts', [ProfilePostController::class, 'store'])->name('profile.posts.store');

@@ -1,6 +1,4 @@
 <x-layout>
-    <x-slot:title>{{ $title }}</x-slot:title>
-
     <div class="max-w-4xl mx-auto p-6 bg-white shadow-lg rounded-lg">
         <!-- User Information Section -->
         <div class="mb-8">

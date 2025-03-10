@@ -66,7 +66,7 @@
                     <div class="mb-5">
                         @if ($post->image)
                             <img class="object-cover w-full h-48 rounded-lg"
-                                src="{{ asset('storage\post-images/' . $post->image) }}" alt="{{ $post->title }}" />
+                                src="{{ asset( $post->image) }}" alt="{{ $post->title }}" />
                         @else
                             <img class="object-cover w-full h-48 rounded-lg"
                                 src="https://cdn.discordapp.com/attachments/831039319547314208/1342392215229698100/bg.png?ex=67b977ac&is=67b8262c&hm=90e15f67ef6838b7d7faa11ba05422bbd534a94a015f00e0c2e77661e4aadad7&"
@@ -76,9 +76,9 @@
                     <h2 class="mb-2 text-2xl font-bold tracking-tight text-gray-900 dark:text-white">
                         <a href="/posts/{{ $post->slug }}" class="hover:underline">{{ $post['title'] }}</a>
                     </h2>
-                    <p class="mb-5 font-light text-gray-500 dark:text-gray-400 flex-grow">
-                        {{ Str::limit($post['body'], 150) }}
-                    </p>
+                    <div class="mb-5 font-lightflex-grow">
+                        {{ Str::limit(strip_tags(preg_replace('/<figcaption\b[^>]*>.*?<\/figcaption>/i', '', $post['body'])), 150) }}
+                    </div>
                     <div class="mt-auto flex justify-between items-center">
                         <a href="/posts?author={{ $post->author->username }}">
                             <div class="flex items-center space-x-3">

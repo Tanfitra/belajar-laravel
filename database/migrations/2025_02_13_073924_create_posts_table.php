@@ -19,8 +19,8 @@ return new class extends Migration
                 indexName: 'posts_author_id',
             );
             $table->string('slug')->unique();
-            $table->string('image')->nullable();
             $table->text('body');
+            $table->string('image')->nullable();
             $table->timestamps();
         });
     }
