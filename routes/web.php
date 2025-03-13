@@ -8,20 +8,20 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\PostController;
+use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\ProfilePostController;
 use Illuminate\Foundation\Auth\EmailVerificationRequest;
 
 Route::get('/', function () {
-    return view('home', ['title' => 'Home Page']);
+    return view('home');
 });
 
 Route::get('/about', function () {
-    return view('about', ['title' => 'About']);
+    return view('about');
 });
 
 Route::get('/posts', function () {
     return view('posts', [
-        'title' => 'Blog',
         'posts' => Post::filter(request(['search', 'category', 'author']))->latest()->paginate(9)->withQueryString(),
         'categories' => Category::all()
     ]);
@@ -30,8 +30,7 @@ Route::get('/posts', function () {
 Route::prefix('profile')->middleware(['auth', 'verified'])->group(function () {
     Route::get('/', function () {
         return view('profile.index', [
-            'title' => 'My Profile',
-            'user' => User::with(['posts' => function($query) {
+            'user' => User::with(['posts' => function ($query) {
                 $query->orderBy('created_at', 'desc');
             }])->find(Auth::id()),
         ]);
@@ -47,21 +46,44 @@ Route::prefix('profile')->middleware(['auth', 'verified'])->group(function () {
 });
 
 Route::get('/posts/{post:slug}', function (Post $post) {
-    return view('post', ['title' => 'Single Post', 'post' => $post]);
+    return view('post', ['post' => $post]);
 });
 
 Route::get('/authors/{user:username}', function (User $user) {
     // $posts = $user->posts->load(['author', 'category']);
-    return view('posts', ['title' => count($user->posts) . ' Articles by ' . $user->name, 'posts' => $user->posts]);
+    return view('posts', ['posts' => $user->posts]);
 });
 
 Route::get('/categories/{category:slug}', function (Category $category) {
     // $posts = $category->posts->load(['author', 'category']);
-    return view('posts', ['title' => 'Articles in ' . $category->name, 'posts' => $category->posts]);
+    return view('posts', ['posts' => $category->posts]);
+});
+
+Route::prefix('admin')->middleware(['auth', 'verified'])->group(function () {
+    Route::get('/', function () {
+        return view('admin.index', [
+            'totalPosts' => Post::count(),
+            'totalCategories' => Category::count(),
+            'totalUsers' => User::count(),
+        ]);
+    })->name('admin.dashboard');
+    Route::prefix('category')->group(function () {
+        Route::get('/', [CategoryController::class, 'index'])->name('admin.category.index');
+        Route::get('/create', [CategoryController::class, 'create'])->name('admin.category.create');
+        Route::post('/', [CategoryController::class, 'store'])->name('admin.category.store');
+        Route::get('/{category}/edit', [CategoryController::class, 'edit'])->name('admin.category.edit');
+        Route::put('/{category}', [CategoryController::class, 'update'])->name('admin.category.update');
+        Route::delete('/{category}', [CategoryController::class, 'destroy'])->name('admin.category.destroy');
+    });
+    Route::prefix('posts')->group(function () {
+        Route::prefix('approval')->group(function () {
+            Route::get('/', [CategoryController::class, 'index'])->name('admin.posts.approval.index');
+        });
+    });
 });
 
 Route::get('/contact', function () {
-    return view('contact', ['title' => 'Contacts']);
+    return view('contact');
 });
 
 Route::get('/login', [AuthController::class, 'showLoginForm'])->name('login');

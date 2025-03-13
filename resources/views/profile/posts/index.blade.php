@@ -16,9 +16,10 @@
                     <tr class="border border-gray-300">
                         <td class="border border-gray-300 p-2">{{ $post->title }}</td>
                         <td class="border border-gray-300 p-2">{{ $post->categories->pluck('name')->join(', ') }}</td>
-                        <td class="border border-gray-300 p-2 space-x-2">
+                        <td class="border border-gray-300 p-2 space-x-2 text-white">
                             <a href="{{ url('/profile/posts/' . $post->id . '/edit') }}" class="bg-yellow-400 focus:ring-4 focus:outline-none hover:bg-yellow-500 focus:ring-yellow-300 font-medium rounded-lg text-sm px-3 py-1.5 text-center inline-flex items-center">
-                                <svg class="w-6 h-6 text-white dark:text-white" aria-hidden="true"
+                                Edit
+                                <svg class="w-6 h-6 ml-1" aria-hidden="true"
                                     xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none"
                                     viewBox="0 0 24 24">
                                     <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"
@@ -31,7 +32,8 @@
                                 @method('DELETE')
                                 <button type="submit" class="bg-red-500 focus:ring-4 focus:outline-none hover:bg-red-600 focus:ring-red-400 font-medium rounded-lg text-sm px-3 py-1.5 text-center inline-flex items-center"
                                     onclick="return confirm('Delete this post?')">
-                                    <svg class="w-6 h-6 text-white dark:text-white" aria-hidden="true"
+                                    Delete
+                                    <svg class="w-6 h-6 ml-1" aria-hidden="true"
                                         xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none"
                                         viewBox="0 0 24 24">
                                         <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"

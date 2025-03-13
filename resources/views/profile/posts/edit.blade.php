@@ -73,7 +73,18 @@
                     "green-300": "#86efac",
                     "yellow-300": "#fde047",
                     "purple-300": "#d8b4fe",
-                    "pink-300": "#f9a8d4"
+                    "pink-300": "#f9a8d4",
+                    "orange-300": "#fdba74",
+                    "amber-300": "#fcd34d",
+                    "lime-300": "#bef264",
+                    "emerald-300": "#6ee7b7",
+                    "teal-300": "#5eead4",
+                    "cyan-300": "#67e8f9",
+                    "sky-300": "#7dd3fc",
+                    "indigo-300": "#a5b4fc",
+                    "violet-300": "#c4b5fd",
+                    "fuchsia-300": "#f0abfc",
+                    "rose-300": "#fda4af",
                 };
 
                 var bgColor = tailwindColors[colorClass] || "#e5e7eb";
