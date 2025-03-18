@@ -69,12 +69,12 @@
                                 src="{{ asset( $post->image) }}" alt="{{ $post->title }}" />
                         @else
                             <img class="object-cover w-full h-48 rounded-lg"
-                                src="https://cdn.discordapp.com/attachments/831039319547314208/1342392215229698100/bg.png?ex=67b977ac&is=67b8262c&hm=90e15f67ef6838b7d7faa11ba05422bbd534a94a015f00e0c2e77661e4aadad7&"
+                                src="https://images.unsplash.com/photo-1457369804613-52c61a468e7d?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxjb2xsZWN0aW9uLXBhZ2V8MXxGaE5GRWhuTUZPRXx8ZW58MHx8fHx8"
                                 alt="{{ $post->title }}" />
                         @endif
                     </div>
                     <h2 class="mb-2 text-2xl font-bold tracking-tight text-gray-900 dark:text-white">
-                        <a href="/posts/{{ $post->slug }}" class="hover:underline">{{ $post['title'] }}</a>
+                        <a href="{{ route('post.show', ['username' => $post->author->username, 'post' => $post]) }}" class="hover:underline">{{ $post['title'] }}</a>
                     </h2>
                     <div class="mb-5 font-lightflex-grow">
                         {{ Str::limit(strip_tags(preg_replace('/<figcaption\b[^>]*>.*?<\/figcaption>/i', '', $post['body'])), 150) }}
@@ -90,7 +90,7 @@
                                 </span>
                             </div>
                         </a>
-                        <a href="/posts/{{ $post->slug }}"
+                        <a href="{{ route('post.show', ['username' => $post->author->username, 'post' => $post]) }}""
                             class="inline-flex items-center font-medium text-primary-600 dark:text-primary-500 hover:underline">
                             Read more
                             <svg class="ml-2 w-4 h-4" fill="currentColor" viewBox="0 0 20 20"

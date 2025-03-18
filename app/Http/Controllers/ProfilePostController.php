@@ -23,7 +23,6 @@ class ProfilePostController extends Controller
         }])->find(Auth::id());
 
         return view('profile.posts.index', [
-            'title' => 'My Posts',
             'user' => $user,
         ]);
     }
@@ -58,6 +57,7 @@ class ProfilePostController extends Controller
         $post->author_id = Auth::id();
         $post->slug = Str::slug($request->title);
         $post->body = $request->content;
+        $post->status = 'pending'; // Set status to pending
 
         if ($firstImage) {
             $post->image = 'post-images/' . $firstImage;
@@ -69,7 +69,7 @@ class ProfilePostController extends Controller
 
         notyf()
             ->position('x', 'center')->position('y', 'top')
-            ->success('Your article has been successfully posted');
+            ->success('Your article has been successfully posted and is awaiting approval.');
 
         return redirect('/profile/posts');
     }
@@ -109,7 +109,7 @@ class ProfilePostController extends Controller
         $firstImage = PostHelper::extractFirstImage($request->content);
 
         $post->title = $request->title;
-        
+
         $post->body = $request->content;
 
         if ($firstImage) {
@@ -168,5 +168,27 @@ class ProfilePostController extends Controller
         }
 
         return response()->json(['error' => 'Image upload failed.'], 400);
+    }
+
+    public function pending()
+    {
+        $pendingPosts = Post::where('status', 'pending')
+        ->latest()
+        ->paginate(10);
+        return view('admin.posts.approval.index', [
+            'pendingPosts' => $pendingPosts,
+        ]);
+    }
+    
+    public function approve(Post $post)
+    {
+        $post->status = 'approved';
+        $post->save();
+
+        notyf()
+            ->position('x', 'center')->position('y', 'top')
+            ->success('The article has been approved and published.');
+
+        return redirect()->route('admin.posts.approval.index');
     }
 }

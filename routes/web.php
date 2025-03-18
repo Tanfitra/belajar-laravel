@@ -22,12 +22,12 @@ Route::get('/about', function () {
 
 Route::get('/posts', function () {
     return view('posts', [
-        'posts' => Post::filter(request(['search', 'category', 'author']))->latest()->paginate(9)->withQueryString(),
+        'posts' => Post::latest()->filter(request(['search', 'category', 'author']))->where('status', 'approved')->paginate(9)->withQueryString(),
         'categories' => Category::all()
     ]);
 });
 
-Route::prefix('profile')->middleware(['auth', 'verified'])->group(function () {
+Route::prefix('profile')->middleware(['auth', 'verified', 'role:author'])->group(function () {
     Route::get('/', function () {
         return view('profile.index', [
             'user' => User::with(['posts' => function ($query) {
@@ -45,9 +45,12 @@ Route::prefix('profile')->middleware(['auth', 'verified'])->group(function () {
     Route::delete('/posts/{post}', [ProfilePostController::class, 'destroy'])->name('profile.posts.destroy');
 });
 
-Route::get('/posts/{post:slug}', function (Post $post) {
+Route::get('/posts/@{username}/{post:slug}', function ($username, Post $post) {
+    if ($post->author->username !== $username) {
+        abort(404);
+    }
     return view('post', ['post' => $post]);
-});
+})->name('post.show');
 
 Route::get('/authors/{user:username}', function (User $user) {
     // $posts = $user->posts->load(['author', 'category']);
@@ -59,7 +62,7 @@ Route::get('/categories/{category:slug}', function (Category $category) {
     return view('posts', ['posts' => $category->posts]);
 });
 
-Route::prefix('admin')->middleware(['auth', 'verified'])->group(function () {
+Route::prefix('admin')->middleware(['auth', 'verified', 'role:admin'])->group(function () {
     Route::get('/', function () {
         return view('admin.index', [
             'totalPosts' => Post::count(),
@@ -76,9 +79,8 @@ Route::prefix('admin')->middleware(['auth', 'verified'])->group(function () {
         Route::delete('/{category}', [CategoryController::class, 'destroy'])->name('admin.category.destroy');
     });
     Route::prefix('posts')->group(function () {
-        Route::prefix('approval')->group(function () {
-            Route::get('/', [CategoryController::class, 'index'])->name('admin.posts.approval.index');
-        });
+        Route::get('/approval', [ProfilePostController::class, 'pending'])->name('admin.posts.approval.index');
+        Route::put('/{post}/approve', [ProfilePostController::class, 'approve'])->name('admin.posts.approve');
     });
 });
 
