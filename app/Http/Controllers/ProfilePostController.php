@@ -57,7 +57,7 @@ class ProfilePostController extends Controller
         $post->author_id = Auth::id();
         $post->slug = Str::slug($request->title);
         $post->body = $request->content;
-        $post->status = 'pending'; // Set status to pending
+        $post->status = 'pending';
 
         if ($firstImage) {
             $post->image = 'post-images/' . $firstImage;

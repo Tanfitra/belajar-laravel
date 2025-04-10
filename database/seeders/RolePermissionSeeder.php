@@ -32,7 +32,12 @@ class RolePermissionSeeder extends Seeder
         // $adminRole = Role::create(['name' => 'admin']);
         // $adminRole->givePermissionTo(['create articles', 'edit articles', 'delete articles', 'handle category', 'approve articles']);
 
-        $user = User::findOrFail(1);
-        $user->assignRole('admin');
+        // $user = User::findOrFail(2);
+        // $user->assignRole('author');
+
+        $users = User::whereIn('id', [2, 3, 4])->get();
+        foreach ($users as $user) {
+            $user->assignRole('author');
+        }
     }
 }

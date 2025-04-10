@@ -29,8 +29,8 @@
 
     <!-- Footer -->
     <footer class="border-t py-6 text-center text-gray-600">
-        <p>© 2025 Blog Platform - All Rights Reserved</p>
-        <nav class="flex justify-center space-x-6 mt-2">
+        <p>© 2025 <a href="https://tanfitra.vercel.app/" class="hover:underline">Adhim Tanfitra</a>. All Rights Reserved.
+            <nav class="flex justify-center space-x-6 mt-2">
             <a href="#" class="hover:underline">Help</a>
             <a href="#" class="hover:underline">Privacy</a>
             <a href="#" class="hover:underline">Terms</a>

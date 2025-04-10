@@ -8,6 +8,7 @@
                 <tr class="bg-gray-200">
                     <th class="border border-gray-300 p-2">Title</th>
                     <th class="border border-gray-300 p-2">Category</th>
+                    <th class="border border-gray-300 p-2">Status</th>
                     <th class="border border-gray-300 p-2">Actions</th>
                 </tr>
             </thead>
@@ -16,7 +17,23 @@
                     <tr class="border border-gray-300">
                         <td class="border border-gray-300 p-2">{{ $post->title }}</td>
                         <td class="border border-gray-300 p-2">{{ $post->categories->pluck('name')->join(', ') }}</td>
+                        <td class="border border-gray-300 p-2">
+                            @if ($post->status == 'pending')
+                                <span class="bg-yellow-200 text-yellow-800 px-2 py-1 rounded">Pending</span>
+                            @else
+                                <span class="bg-green-200 text-green-800 px-2 py-1 rounded">Published</span>
+                            @endif
                         <td class="border border-gray-300 p-2 space-x-2 text-white">
+                            <button onclick="openModal('{{ $post->id }}')"
+                                class="bg-blue-500 focus:ring-4 focus:outline-none hover:bg-blue-600 focus:ring-blue-400 font-medium rounded-lg text-sm px-3 py-1.5 text-center inline-flex items-center">
+                                View
+                                <svg class="w-6 h-6 ml-1" aria-hidden="true" xmlns="http://www.w3.org/2000/svg"
+                                    width="24" height="24" fill="none" viewBox="0 0 24 24">
+                                    <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"
+                                        stroke-width="2"
+                                        d="M10 11h2v5m-2 0h4m-2.592-8.5h.01M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
+                                </svg>
+                            </button>
                             <a href="{{ url('/profile/posts/' . $post->id . '/edit') }}" class="bg-yellow-400 focus:ring-4 focus:outline-none hover:bg-yellow-500 focus:ring-yellow-300 font-medium rounded-lg text-sm px-3 py-1.5 text-center inline-flex items-center">
                                 Edit
                                 <svg class="w-6 h-6 ml-1" aria-hidden="true"
@@ -48,4 +65,47 @@
             </tbody>
         </table>
     </div>
+    <div id="postModal" class="fixed inset-0 z-50 hidden bg-black bg-opacity-50 overflow-y-auto">
+        <div class="relative mx-auto p-4 w-full max-w-2xl">
+            <!-- Modal Content -->
+            <div class="bg-white rounded-lg shadow">
+                <!-- Modal Header -->
+                <div class="flex justify-between items-center p-4 border-b">
+                    <h3 class="text-xl font-semibold" id="modalTitle"></h3>
+                    <button onclick="closeModal()" class="text-gray-500 hover:text-gray-700">
+                        <svg class="w-6 h-6" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24"
+                            height="24" fill="none" viewBox="0 0 24 24">
+                            <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M6 18L18 6M6 6l12 12" />
+                        </svg>
+                    </button>
+                </div>
+                <!-- Modal Body -->
+                <div class="p-4">
+                    <p id="modalAuthor" class="text-gray-600 mb-2"></p>
+                    <div id="modalContent" class="prose"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const posts = {!! json_encode($user->posts->load('author')->keyBy('id')) !!};
+    
+        function openModal(postId) {
+            const post = posts[postId];
+    
+            if (!post) return;
+    
+            document.getElementById('modalTitle').innerText = post.title;
+            document.getElementById('modalAuthor').innerText = `By: ${post.author?.name ?? 'Unknown'}`;
+            document.getElementById('modalContent').innerHTML = post.body;
+    
+            document.getElementById('postModal').classList.remove('hidden');
+        }
+    
+        function closeModal() {
+            document.getElementById('postModal').classList.add('hidden');
+        }
+    </script>    
 </x-layout>

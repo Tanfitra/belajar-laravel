@@ -33,11 +33,13 @@
 
             <!-- Filter Category -->
             <div class="flex flex-wrap justify-center gap-2 mt-4">
-                <a href="/posts" class="px-4 py-2 text-sm font-medium text-gray-900 bg-gray-100 rounded-lg hover:bg-gray-200 dark:bg-gray-700 dark:text-white dark:hover:bg-gray-600">
+                <a href="/posts"
+                    class="px-4 py-2 text-sm font-medium text-gray-900 bg-gray-100 rounded-lg hover:bg-gray-200 dark:bg-gray-700 dark:text-white dark:hover:bg-gray-600">
                     All Categories
                 </a>
                 @foreach ($categories as $category)
-                    <a href="/posts?category={{ $category->slug }}" class="px-4 py-2 text-sm font-medium text-white bg-{{ $category->color }}-400 rounded-lg ease-in-out hover:opacity-75 hover:underline">
+                    <a href="/posts?category={{ $category->slug }}"
+                        class="px-4 py-2 text-sm font-medium text-white bg-{{ $category->color }}-400 rounded-lg ease-in-out hover:opacity-75 hover:underline">
                         {{ $category->name }}
                     </a>
                 @endforeach
@@ -65,8 +67,8 @@
                     </div>
                     <div class="mb-5">
                         @if ($post->image)
-                            <img class="object-cover w-full h-48 rounded-lg"
-                                src="{{ asset( $post->image) }}" alt="{{ $post->title }}" />
+                            <img class="object-cover w-full h-48 rounded-lg" src="{{ asset($post->image) }}"
+                                alt="{{ $post->title }}" />
                         @else
                             <img class="object-cover w-full h-48 rounded-lg"
                                 src="https://images.unsplash.com/photo-1457369804613-52c61a468e7d?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxjb2xsZWN0aW9uLXBhZ2V8MXxGaE5GRWhuTUZPRXx8ZW58MHx8fHx8"
@@ -74,7 +76,8 @@
                         @endif
                     </div>
                     <h2 class="mb-2 text-2xl font-bold tracking-tight text-gray-900 dark:text-white">
-                        <a href="{{ route('post.show', ['username' => $post->author->username, 'post' => $post]) }}" class="hover:underline">{{ $post['title'] }}</a>
+                        <a href="{{ route('post.show', ['username' => $post->author->username, 'post' => $post]) }}"
+                            class="hover:underline">{{ $post['title'] }}</a>
                     </h2>
                     <div class="mb-5 font-lightflex-grow">
                         {{ Str::limit(strip_tags(preg_replace('/<figcaption\b[^>]*>.*?<\/figcaption>/i', '', $post['body'])), 150) }}
@@ -83,7 +86,7 @@
                         <a href="/posts?author={{ $post->author->username }}">
                             <div class="flex items-center space-x-3">
                                 <img class="w-7 h-7 rounded-full"
-                                    src="https://flowbite.s3.amazonaws.com/blocks/marketing-ui/avatars/jese-leos.png"
+                                    src="{{ $post->author->profile_photo_path ? Storage::url($post->author->profile_photo_path) : 'https://ui-avatars.com/api/?name=' . urlencode($post->author->name) . '&background=random' }}"
                                     alt="{{ $post->author->name }}" />
                                 <span class="font-medium dark:text-white">
                                     {{ $post->author->name }}

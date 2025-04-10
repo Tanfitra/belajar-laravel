@@ -65,7 +65,6 @@
             function formatCategory(category) {
                 if (!category.id) return category.text;
 
-                // Ambil warna dari atribut data-color
                 var colorClass = $(category.element).data('color');
                 var tailwindColors = {
                     "red-300": "#fca5a5",

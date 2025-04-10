@@ -93,23 +93,16 @@
     </div>
 
     <script>
-        // Function to open the modal and populate it with post data
         function openModal(postId) {
-            // Fetch post details (you can use AJAX or pass data directly)
             const post = {!! json_encode($pendingPosts->keyBy('id')) !!}[postId];
 
-            // Populate modal with post data
             document.getElementById('modalTitle').innerText = post.title;
             document.getElementById('modalAuthor').innerText = `By: ${post.author.name}`;
             document.getElementById('modalContent').innerHTML = post.body;
 
-            // document.getElementById('modalApproveButton').href = `/admin/posts/${postId}/approve`;
-
-            // Show the modal
             document.getElementById('postModal').classList.remove('hidden');
         }
 
-        // Function to close the modal
         function closeModal() {
             document.getElementById('postModal').classList.add('hidden');
         }

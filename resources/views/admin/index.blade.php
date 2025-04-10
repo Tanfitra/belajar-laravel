@@ -8,7 +8,21 @@
                     {{ $totalPosts }} posts
                 </p>
             </div>
+            <div class="max-w-sm rounded overflow-hidden shadow-lg bg-white p-6 flex-1">
+                <div class="font-bold text-xl mb-2">Total Pending Posts</div>
+                <p class="text-gray-700 text-base">
+                    {{ $totalPendingPosts }} posts
+                </p>
+            </div>
 
+            <div class="max-w-sm rounded overflow-hidden shadow-lg bg-white p-6 flex-1">
+                <div class="font-bold text-xl mb-2">Total Published Posts</div>
+                <p class="text-gray-700 text-base">
+                    {{ $totalApprovedPosts }} posts
+                </p>
+            </div>
+        </div>
+        <div class="flex space-x-4 p-4">
             <div class="max-w-sm rounded overflow-hidden shadow-lg bg-white p-6 flex-1">
                 <div class="font-bold text-xl mb-2">Total Category</div>
                 <p class="text-gray-700 text-base">
@@ -21,6 +35,6 @@
                 <p class="text-gray-700 text-base">
                     {{ $totalUsers }} users
                 </p>
+            </div>
         </div>
-    </div>
 </x-layout-admin>

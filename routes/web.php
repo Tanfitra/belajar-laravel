@@ -5,10 +5,13 @@ use App\Models\User;
 use App\Models\Category;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\View;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\PostController;
+use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\CategoryController;
+use App\Http\Controllers\SettingsController;
 use App\Http\Controllers\ProfilePostController;
 use Illuminate\Foundation\Auth\EmailVerificationRequest;
 
@@ -34,6 +37,12 @@ Route::prefix('profile')->middleware(['auth', 'verified', 'role:author'])->group
                 $query->orderBy('created_at', 'desc');
             }])->find(Auth::id()),
         ]);
+    });
+
+    Route::prefix('settings')->group(function () {
+        Route::get('/', [SettingsController::class, 'index'])->name('settings');
+        Route::put('/profile', [SettingsController::class, 'updateProfile'])->name('settings.profile');
+        Route::put('/password', [SettingsController::class, 'updatePassword'])->name('settings.password');
     });
 
     Route::post('/profile/posts/upload', [ProfilePostController::class, 'upload'])->name('profile.posts.upload');
@@ -66,6 +75,8 @@ Route::prefix('admin')->middleware(['auth', 'verified', 'role:admin'])->group(fu
     Route::get('/', function () {
         return view('admin.index', [
             'totalPosts' => Post::count(),
+            'totalPendingPosts' => Post::where('status', 'pending')->count(),
+            'totalApprovedPosts' => Post::where('status', 'approved')->count(),
             'totalCategories' => Category::count(),
             'totalUsers' => User::count(),
         ]);

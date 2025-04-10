@@ -13,7 +13,8 @@
     <div class="hidden sm:flex space-x-8 items-center">
         <a href="/about" class="text-gray-700 hover:text-gray-950">Our Story</a>
         <a href="/profile/posts/create" class="flex items-center space-x-1 text-gray-700 hover:text-gray-950">
-            <svg class="w-6 h-6" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
+            <svg class="w-6 h-6" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24"
+                fill="none" viewBox="0 0 24 24">
                 <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                     d="m14.304 4.844 2.852 2.852M7 7H4a1 1 0 0 0-1 1v10a1 1 0 0 0 1 1h11a1 1 0 0 0 1-1v-4.5m2.409-9.91a2.017 2.017 0 0 1 0 2.853l-6.844 6.844L8 14l.713-3.565 6.844-6.844a2.015 2.015 0 0 1 2.852 0Z" />
             </svg>
@@ -29,9 +30,14 @@
                         id="user-menu-button" aria-expanded="false" aria-haspopup="true">
                         <span class="absolute -inset-1.5"></span>
                         <span class="sr-only">Open user menu</span>
-                        <img class="size-8 rounded-full"
-                            src="https://ui-avatars.com/api/?name={{ urlencode(auth()->user()->name) }}&background=random"
-                            alt="{{ auth()->user()->name }}">
+                        @if (auth()->user()->profile_photo_path)
+                            <img class="size-8 rounded-full" src="{{ Storage::url(auth()->user()->profile_photo_path) }}"
+                                alt="{{ auth()->user()->name }}" />
+                        @else
+                            <img class="size-8 rounded-full"
+                                src="https://ui-avatars.com/api/?name={{ urlencode(auth()->user()->name) }}&background=random"
+                                alt="{{ auth()->user()->name }}" />
+                        @endif
                     </button>
                 </div>
 
@@ -45,12 +51,12 @@
                     <a href="/profile" class="block px-4 py-2 text-sm text-gray-700" role="menuitem" tabindex="-1"
                         id="user-menu-item-0">Profile</a>
                     @hasrole('admin')
-                    <a href="/admin" class="block px-4 py-2 text-sm text-gray-700" role="menuitem" tabindex="-1"
-                        id="user-menu-item-1">Admin Dashboard</a>
+                        <a href="/admin" class="block px-4 py-2 text-sm text-gray-700" role="menuitem" tabindex="-1"
+                            id="user-menu-item-1">Admin Dashboard</a>
                     @endhasrole
                     <a href="/profile/posts" class="block px-4 py-2 text-sm text-gray-700" role="menuitem" tabindex="-1"
                         id="user-menu-item-1">Manage Posts</a>
-                    <a href="#" class="block px-4 py-2 text-sm text-gray-700" role="menuitem" tabindex="-1"
+                    <a href="/profile/settings" class="block px-4 py-2 text-sm text-gray-700" role="menuitem" tabindex="-1"
                         id="user-menu-item-1">Settings</a>
                     <form method="POST" action="{{ route('logout') }}">
                         @csrf
@@ -73,7 +79,8 @@
         <div class="px-4 py-2 space-y-2">
             <a href="/about" class="block text-gray-700 hover:text-gray-950">Our Story</a>
             <a href="/profile/posts/create" class="flex items-center space-x-1 text-gray-700 hover:text-gray-950">
-                <svg class="w-6 h-6" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
+                <svg class="w-6 h-6" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24"
+                    fill="none" viewBox="0 0 24 24">
                     <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                         d="m14.304 4.844 2.852 2.852M7 7H4a1 1 0 0 0-1 1v10a1 1 0 0 0 1 1h11a1 1 0 0 0 1-1v-4.5m2.409-9.91a2.017 2.017 0 0 1 0 2.853l-6.844 6.844L8 14l.713-3.565 6.844-6.844a2.015 2.015 0 0 1 2.852 0Z" />
                 </svg>
@@ -83,16 +90,18 @@
             @auth
                 <a href="/profile" class="block text-gray-700 hover:text-gray-950">Profile</a>
                 @hasrole('admin')
-                <a href="/admin" class="block text-gray-700 hover:text-gray-950">Admin Dashboard</a>
+                    <a href="/admin" class="block text-gray-700 hover:text-gray-950">Admin Dashboard</a>
                 @endhasrole
                 <a href="/profile/posts" class="block text-gray-700 hover:text-gray-950">Manage Posts</a>
-                <a href="#" class="block text-gray-700 hover:text-gray-950">Settings</a>
+                <a href="/settings" class="block text-gray-700 hover:text-gray-950">Settings</a>
                 <form method="POST" action="{{ route('logout') }}">
                     @csrf
-                    <button type="submit" class="block w-full text-left text-gray-700 hover:text-gray-950">Sign out</button>
+                    <button type="submit" class="block w-full text-left text-gray-700 hover:text-gray-950">Sign
+                        out</button>
                 </form>
             @else
-                <a href="{{ route('login') }}" class="block bg-[#187a15] text-white px-4 py-2 rounded-full text-center">Sign In</a>
+                <a href="{{ route('login') }}"
+                    class="block bg-[#187a15] text-white px-4 py-2 rounded-full text-center">Sign In</a>
             @endauth
         </div>
     </div>

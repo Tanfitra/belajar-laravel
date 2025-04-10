@@ -8,7 +8,7 @@
                     <address class="flex items-center my-4 not-italic">
                         <div class="inline-flex items-center mr-3 text-sm text-gray-900 dark:text-white">
                             <img class="mr-4 w-16 h-16 rounded-full"
-                                src="https://flowbite.com/docs/images/people/profile-picture-2.jpg" alt="{{ $post->author->name }}">
+                                src="{{ $post->author->profile_photo_path ? Storage::url($post->author->profile_photo_path) : 'https://ui-avatars.com/api/?name=' . urlencode($post->author->name) . '&background=random' }}" alt="{{ $post->author->name }}">
                             <div class="flex flex-col">
                                 <a href="/posts?authors={{ $post->author->username }}" rel="author"
                                     class="text-xl font-bold text-gray-900 dark:text-white hover:underline">{{ $post->author->name }}
