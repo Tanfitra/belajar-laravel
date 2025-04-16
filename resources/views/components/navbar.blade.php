@@ -1,6 +1,6 @@
 <nav class="flex justify-between items-center px-4 sm:px-10 py-5 border-b bg-[#fdfaf5]" x-data="{ isOpen: false, isMobileMenuOpen: false }">
     <!-- Logo -->
-    <a href="/" class="text-3xl font-semibold">Prabubima</a>
+    <a href="/" class="text-3xl font-semibold">Minima</a>
 
     <!-- Hamburger Menu (Mobile Only) -->
     <button @click="isMobileMenuOpen = !isMobileMenuOpen" class="block sm:hidden focus:outline-none">
